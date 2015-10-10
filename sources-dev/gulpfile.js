@@ -13,6 +13,7 @@ var gulp      = require('gulp'),
     sourcemaps = require('gulp-sourcemaps'),
     concat    = require('gulp-concat'),
     imagemin  = require('gulp-imagemin'),
+    pngquant  = require('imagemin-pngquant');
     htmlreplace = require('gulp-html-replace'),
     options	  = require("minimist")(process.argv.slice(2));
 
@@ -52,6 +53,13 @@ gulp.task('css-prod', function()
     .pipe(gulp.dest(output + 'css/'));
 });
 
+// FONT TASK
+gulp.task('font', function() 
+{
+  return gulp.src('./font/**/*')
+    .pipe(gulp.dest(output + 'font/'));
+});
+
 // JAVASCRIPT TASK
 gulp.task('js', function() 
 {
@@ -64,7 +72,11 @@ gulp.task('js', function()
 // IMAGE TASK
 gulp.task('img', function () {
   return gulp.src('./img/**/*.{png,jpg,jpeg,gif,svg}')
-    .pipe(imagemin())				// optimise le poids des images
+    .pipe(imagemin({				// optimise le poids des images
+        progressive: true,
+        svgoPlugins: [{removeViewBox: false}],
+        use: [pngquant()]
+    }))	
     .pipe(gulp.dest(output + 'img/'));
 });
 
@@ -102,5 +114,5 @@ gulp.task('watch', function()
 });
 
 // WATCH TASK
-gulp.task('dev', ['css', 'js', 'img', 'html']);
-gulp.task('prod', ['css-prod', 'js', 'img', 'html-prod']);
+gulp.task('dev', ['css', 'font', 'js', 'img', 'html']);
+gulp.task('prod', ['css-prod', 'font', 'js', 'img', 'html-prod']);
