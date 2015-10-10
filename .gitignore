@@ -1,0 +1,6 @@
+node_modules
+site/js/**/*.js
+site/css/**/*.css
+site/tpl/**/*.html
+site/*.html
+site/img/**/*
