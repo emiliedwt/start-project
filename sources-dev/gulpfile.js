@@ -2,7 +2,7 @@ var output = '../site/';
 
 var gulp      = require('gulp'),
     rename    = require('gulp-rename'),    
-    sass      = require('gulp-sass'),      
+    compass = require('gulp-compass'),      
     minifyCss = require('gulp-minify-css'),
     uglify    = require('gulp-uglify'),    
     plumber   = require('gulp-plumber'),   
@@ -10,7 +10,6 @@ var gulp      = require('gulp'),
     autoprefixer = require("gulp-autoprefixer"),
     uncss     = require("gulp-uncss"),
     extender  = require("gulp-html-extend"),
-    sourcemaps = require('gulp-sourcemaps'),
     concat    = require('gulp-concat'),
     imagemin  = require('gulp-imagemin'),
     pngquant  = require('imagemin-pngquant');
@@ -23,9 +22,12 @@ gulp.task('css', function()
 {
   return gulp.src('./sass/*.scss')
   	.pipe(plumber())				// evite les plantage en mode watch
-  	.pipe(sourcemaps.init())		// facilite le debug des css
-    .pipe(sass())					// compile les scss en css
-    .pipe(sourcemaps.write())
+    .pipe(compass({
+      config_file: './config.rb',
+      css: '../site/css',
+      sass: 'sass',
+      sourcemap: true
+    }))					// compile les scss en css
     .pipe(autoprefixer())			// ajoute les prefixes navigateur
     // .pipe(uncss({				// supprime les css non utilisé (attention au css injecté en js)
     //   html: ['./*.html']
@@ -40,7 +42,11 @@ gulp.task('css', function()
 gulp.task('css-prod', function() 
 {
   return gulp.src('./sass/**/*.scss')
-    .pipe(sass())
+    .pipe(compass({
+      config_file: './config.rb',
+      css: '../site/css',
+      sass: 'sass'
+    }))
     .pipe(autoprefixer())
     // .pipe(uncss({
     //     html: 'index.html'
@@ -56,7 +62,7 @@ gulp.task('css-prod', function()
 // FONT TASK
 gulp.task('font', function() 
 {
-  return gulp.src('./font/**/*')
+  return gulp.src('./font/**/*.{otf,ttf,eot,svg,woff,woff2}')
     .pipe(gulp.dest(output + 'font/'));
 });
 
